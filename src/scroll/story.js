@@ -6,6 +6,7 @@
 export default function setupStory(host, navigate) {
   const root = host.querySelector('#rn-story-wrap');
   if (!root) return () => {};
+  const stage = root.querySelector('#stage');
   const robot = root.querySelector('#robotAnchor');
   const rotor = root.querySelector('#robotRotor');
   const orbit = root.querySelector('#orbit');
@@ -59,6 +60,26 @@ export default function setupStory(host, navigate) {
   function render() {
     pending=false;
     const rect = root.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // A sticky stage can scroll out of view on mobile Chrome when nested in
+    // a Shadow DOM. Pin it to the viewport while the story is active.
+    // At the end, put the stage at the bottom of the story so the NEXT
+    // React sections appear normally instead of a large blank screen.
+    if (rect.bottom <= viewportHeight + 1) {
+      stage.style.position = 'absolute';
+      stage.style.top = 'auto';
+      stage.style.bottom = '0';
+    } else if (rect.top > 0) {
+      stage.style.position = 'absolute';
+      stage.style.top = '0';
+      stage.style.bottom = 'auto';
+    } else {
+      stage.style.position = 'fixed';
+      stage.style.top = '0';
+      stage.style.bottom = 'auto';
+    }
+    root.classList.add('story-ready');
     // The cinematic homepage starts at viewport top (no old React navbar).
     const range = Math.max(1, root.offsetHeight - window.innerHeight);
     const p = clamp(-rect.top / range);
