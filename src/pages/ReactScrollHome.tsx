@@ -5,11 +5,15 @@ import storyCss from '@/scroll/story.css?raw';
 import setupStory from '@/scroll/story.js';
 
 /**
- * React adaptation of the APPROVED RoboNav-3D scrolling storyboard.
+ * The approved RoboNav scroll-controlled robot journey, rebuilt in React.
  *
- * The Shadow DOM isolates all visual styles so Grid Simulator, Experiment
- * Lab, Algorithm Comparison and Python Visualizations remain untouched.
- * Unlike an iframe, the robot responds to the real browser page scroll.
+ * This uses the SAME robot, colors, sections and 360° scroll waypoints from
+ * the earlier working Streamlit/HTML concept, not the old decoration bot.
+ *
+ * - A ShadowRoot isolates the custom home styles from other React pages.
+ * - The story moves with the real browser scroll, not a timed video.
+ * - Clicking a simulator or experiment link navigates to the real pages.
+ * - The entire setup and all event listeners are cleaned up on unmount.
  */
 export default function ReactScrollHome() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -20,21 +24,25 @@ export default function ReactScrollHome() {
     if (!host) return;
     const shadow = host.shadowRoot ?? host.attachShadow({ mode: 'open' });
 
-    // React provides the sticky global Navbar; hide the duplicate one
-    // from the visual storyboard rather than drawing two navigation bars.
-    const markup = storyHtml.replace(/<nav>[\s\S]*?<\/nav>/i, '');
-    const reactOverrides = [
-      ':host{display:block;overflow:visible!important;width:100%}',
+    // Preserve the reference's OWN navigation, exactly as in the approved
+    // scrolling website. The ordinary React navbar is hidden on this page.
+    // Keep the stage sticky within its section so it disappears naturally
+    // when the visitor reaches the bottom.
+    const overrides = [
+      ':host{display:block;width:100%;overflow:visible!important}',
       '#rn-story-wrap{height:490vh;min-height:2800px;position:relative;overflow:clip}',
-      '#stage{top:64px;height:calc(100svh - 64px);min-height:500px}',
-      '.scene{inset:0 0 45px}',
+      '#stage{position:sticky;top:0;inset:auto;height:100svh;min-height:500px}',
       '#scrollspace{display:none}',
       '.btn,[data-target],[data-scroll]{cursor:pointer}',
-      '@media(max-width:800px){#rn-story-wrap{height:420vh;min-height:2400px}.robot-anchor{width:210px;height:260px}}',
+      'button[data-target]{cursor:pointer}',
+      '@media(max-width:800px){',
+      ' #rn-story-wrap{height:430vh;min-height:2300px}',
+      ' .robot-anchor{width:205px;height:255px}',
+      '}',
     ].join('\n');
-    shadow.innerHTML = '<style>' + storyCss + reactOverrides + '</style>' + markup;
 
-    // Install scroll/resize and button handlers; remove on navigation.
+    shadow.innerHTML = '<style>' + storyCss + overrides + '</style>' + storyHtml;
+
     const cleanup = setupStory(shadow, navigate);
     return () => {
       cleanup();
@@ -42,5 +50,5 @@ export default function ReactScrollHome() {
     };
   }, [navigate]);
 
-  return <div ref={mountRef} aria-label="RoboNav scroll-controlled 360 degree robot homepage" />;
+  return <div ref={mountRef} aria-label="RoboNav interactive scroll-controlled robot with 360 degree spin" />;
 }

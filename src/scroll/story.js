@@ -59,8 +59,9 @@ export default function setupStory(host, navigate) {
   function render() {
     pending=false;
     const rect = root.getBoundingClientRect();
-    const range = Math.max(1,root.offsetHeight-(window.innerHeight-64));
-    const p=clamp((64-rect.top)/range);
+    // The cinematic homepage starts at viewport top (no old React navbar).
+    const range = Math.max(1, root.offsetHeight - window.innerHeight);
+    const p = clamp(-rect.top / range);
     const motion=pose(reduced?0:p);
     robot.style.left=(motion.x*100)+'%';
     robot.style.top=(motion.y*100)+'%';
@@ -100,8 +101,8 @@ export default function setupStory(host, navigate) {
       window.scrollTo(0,0);
     } else {
       const progress=clamp(Number(target.dataset.scroll));
-      const top=window.scrollY+root.getBoundingClientRect().top-64;
-      const range=Math.max(1,root.offsetHeight-(window.innerHeight-64));
+      const top=window.scrollY+root.getBoundingClientRect().top;
+      const range=Math.max(1,root.offsetHeight-window.innerHeight);
       window.scrollTo({top:top+progress*range,behavior:'smooth'});
     }
   }
