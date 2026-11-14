@@ -3,7 +3,8 @@ import { lazy, Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-const Home = lazy(() => import('@/pages/Home'));
+const Home = lazy(() => import('@/pages/ReactScrollHome'));
+const ClassicHome = lazy(() => import('@/pages/Home'));
 const GridSimulator = lazy(() => import('@/pages/GridSimulator'));
 const AlgorithmComparison = lazy(() => import('@/pages/AlgorithmComparison'));
 const ExperimentLab = lazy(() => import('@/pages/ExperimentLab'));
@@ -29,6 +30,7 @@ export default function App() {
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/classic-home" element={<ClassicHome />} />
               <Route path="/simulator" element={<GridSimulator />} />
               <Route path="/comparison" element={<AlgorithmComparison />} />
               <Route path="/lab" element={<ExperimentLab />} />

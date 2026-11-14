@@ -2,7 +2,7 @@ name: RoboNav Checks
 
 on:
   push:
-    branches: [main, final-robonav-website-ready]
+    branches: [main, final-robonav-website-ready, robonav-3d-scroll-react]
   pull_request:
 
 jobs:

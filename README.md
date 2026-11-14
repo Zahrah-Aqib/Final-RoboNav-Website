@@ -166,3 +166,12 @@ RoboNav/
 - Browser simulation uses a 2D grid, with a separate decorative 3D robot scene.
 - Large grids are tested primarily in non-animated experiment batches.
 - The backend requires a Python-capable host for public deployment. The standalone Streamlit site is maintained separately.
+
+
+## New React 3D scroll homepage
+
+The `robonav-3d-scroll-react` branch replaces the homepage with the approved RoboNav scrolling story. The robot travels right → left → center, completes a scroll-synced 360° twirl, then continues toward the live simulator. The visual style matches the Streamlit RoboNav-3D prototype, but scrolling happens on the real React page and buttons go to the existing simulator, comparison and experiment routes.
+
+The earlier homepage is preserved at `/classic-home`. The A*/Greedy Python API remains unchanged and is still required for the real search functionality. The storyboard robot is a 3D-styled SVG/CSS character, not a newly modeled Three.js character. The original standalone Three.js demo is still available in the classic homepage.
+
+**Run:** `npm ci`, then `npm run dev`. To deploy as a separate Vercel site, import this repository with Production Branch `robonav-3d-scroll-react`, framework `Vite`, root `./`, output `dist`, and set `VITE_API_URL` to the real Python API origin. Keep `main` as the production branch of the existing site until the new design is reviewed.
